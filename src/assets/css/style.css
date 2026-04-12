@@ -1,0 +1,10 @@
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('../fonts/Playfair_Display/PlayfairDisplay-Italic-VariableFont_wght.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('../fonts/Inter/static/Inter_28pt-Regular.ttf') format('truetype');
+}
+
