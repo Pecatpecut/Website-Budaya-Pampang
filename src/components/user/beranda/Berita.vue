@@ -24,15 +24,14 @@
             <!-- IMAGE -->
             <div class="image-wrapper">
               <img :src="item.image" />
-
-              <!-- OVERLAY -->
-              <div class="overlay">
-                <h6>{{ item.title }}</h6>
-              </div>
             </div>
 
-            <!-- CONTENT -->
+            <!-- TEXT -->
             <div class="content">
+              <h6 class="title">
+                {{ item.title }}
+              </h6>
+
               <small class="meta">
                 {{ item.author }} • {{ item.date }}
               </small>
@@ -60,27 +59,26 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-/* DATA DUMMY (SIAP DIGANTI API NANTI) */
 const beritaList = ref([
   {
     id: 1,
     title: 'Asal-Usul Desa Budaya Pampang',
     author: 'Admin',
-    date: '10 April 2026',
+    date: 'April 10, 2026',
     image: new URL('@/assets/images/lamin.svg', import.meta.url).href
   },
   {
     id: 2,
     title: 'Keunikan Tarian Dayak Kenyah',
     author: 'Admin',
-    date: '10 April 2026',
+    date: 'April 10, 2026',
     image: new URL('@/assets/images/tarian.svg', import.meta.url).href
   },
   {
     id: 3,
     title: 'Wisata Budaya yang Mendunia',
     author: 'Admin',
-    date: '10 April 2026',
+    date: 'April 10, 2026',
     image: new URL('@/assets/images/susur-sungai.svg', import.meta.url).href
   }
 ])
@@ -91,8 +89,10 @@ const goDetail = (id) => {
 </script>
 
 <style scoped>
+
 .berita-section {
-  padding: 100px 0;
+  padding: 60px 0;
+  background: #ffffff;
 }
 
 /* HEADER */
@@ -107,6 +107,7 @@ const goDetail = (id) => {
 
 .line {
   height: 2px;
+  width: 60px;
   background: #c0392b;
   margin-top: 10px;
 }
@@ -119,40 +120,31 @@ const goDetail = (id) => {
 
 /* IMAGE */
 .image-wrapper {
-  position: relative;
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: 12px;
 }
 
 .image-wrapper img {
   width: 100%;
-  height: 200px;
+  height: 180px;
   object-fit: cover;
   transition: 0.4s;
 }
 
-/* OVERLAY */
-.overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: flex-end;
-  padding: 15px;
-  opacity: 0;
-  transition: 0.3s;
-}
-
-.overlay h6 {
-  color: white;
-  font-weight: 600;
-}
-
 /* CONTENT */
 .content {
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
+/* TITLE */
+.title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #111;
+}
+
+/* META */
 .meta {
   color: #888;
   font-size: 0.8rem;
@@ -160,15 +152,11 @@ const goDetail = (id) => {
 
 /* HOVER */
 .berita-card:hover img {
-  transform: scale(1.1);
-}
-
-.berita-card:hover .overlay {
-  opacity: 1;
+  transform: scale(1.05);
 }
 
 .berita-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
 }
 
 /* BUTTON */
@@ -184,4 +172,9 @@ const goDetail = (id) => {
 .btn-more:hover {
   background: #a93226;
 }
+
+.title:hover {
+  text-decoration: underline;
+}
+
 </style>

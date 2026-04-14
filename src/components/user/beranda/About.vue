@@ -33,9 +33,12 @@
             Desa Budaya Pampang merupakan representasi hidup dari budaya suku Dayak Kenyah yang tetap terjaga di tengah perkembangan zaman. Di sini, tradisi bukan sekadar warisan, melainkan bagian dari kehidupan sehari-hari yang terus dilestarikan dari generasi ke generasi.
           </p>
 
-          <button class="btn btn-danger mt-3 px-4 py-2 rounded-pill">
+          <router-link 
+            to="/tentang#sejarah-section"
+            class="btn btn-danger mt-3 px-4 py-2 rounded-pill"
+          >
             Selengkapnya →
-          </button>
+          </router-link>
         </div>
 
       </div>
