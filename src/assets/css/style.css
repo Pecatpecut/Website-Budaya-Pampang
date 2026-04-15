@@ -8,6 +8,10 @@
   src: url('../fonts/Inter/static/Inter_28pt-Regular.ttf') format('truetype');
 }
 
+body{
+  padding-top: 70px;
+}
+
 .scroll-progress {
   position: fixed;
   top: 0;

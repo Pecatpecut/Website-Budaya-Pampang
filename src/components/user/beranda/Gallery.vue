@@ -1,5 +1,5 @@
 <template>
-  <section class="gallery-section py-5">
+  <section class="gallery-section pt-5 pb-1">
     <div class="container">
 
       <!-- TITLE -->
@@ -33,8 +33,9 @@
 
       </div>
 
+      <!-- BUTTON -->
       <div class="d-flex justify-content-end mt-4">
-        <button class="btn-more">
+        <button class="btn-more" @click="goToGaleri">
           Lebih Banyak →
         </button>
       </div>
@@ -50,10 +51,11 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-/* =========================
-   DATA
-========================= */
+const router = useRouter()
+
+/* DATA */
 const galleryList = [
   {
     image: new URL('@/assets/images/lamin.svg', import.meta.url).href,
@@ -89,18 +91,21 @@ const galleryList = [
   }
 ]
 
-/* =========================
-   LIGHTBOX
-========================= */
-const lightbox = ref(null)
+/* NAVIGATE */
+const goToGaleri = () => {
+  router.push({
+    path: '/publikasi',
+    hash: '#galeri'
+  })
+}
 
+/* LIGHTBOX */
+const lightbox = ref(null)
 const openLightbox = (img) => {
   lightbox.value = img
 }
 
-/* =========================
-   TILT EFFECT
-========================= */
+/* TILT EFFECT */
 const tiltStyles = ref([])
 
 const handleTilt = (e, index) => {
@@ -112,34 +117,34 @@ const handleTilt = (e, index) => {
   const rotateY = ((x / rect.width) - 0.5) * -10
 
   tiltStyles.value[index] = {
-    transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`
+    transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
   }
 }
 
 const resetTilt = (index) => {
   tiltStyles.value[index] = {
-    transform: 'rotateX(0) rotateY(0) scale(1)'
+    transform: 'rotateX(0) rotateY(0)'
   }
 }
 </script>
 
 <style scoped>
+
+/* SECTION */
 .gallery-section {
   padding: 100px 0;
-  background: #ffffff;
 }
 
 /* TITLE */
 .section-title {
   font-size: 2rem;
   font-weight: 600;
-  font-family: "Inter";
+  font-family: 'Inter', sans-serif;
 }
 
 .section-title span {
   font-family: 'Playfair Display', serif;
   font-style: italic;
-  font-weight: 500;
 }
 
 /* GRID */
@@ -150,13 +155,12 @@ const resetTilt = (index) => {
   gap: 15px;
 }
 
-/* ITEM */
+/* ITEM (CONTAINER FIXED) */
 .gallery-item {
   position: relative;
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: transform 0.2s ease;
   transform-style: preserve-3d;
 }
 
@@ -169,28 +173,38 @@ const resetTilt = (index) => {
   grid-row: span 2;
 }
 
-/* IMAGE */
+/* IMAGE (ZOOM ONLY HERE 🔥) */
 .gallery-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+
+  transform: scale(1);
+  transition: transform 0.6s ease, filter 0.4s ease;
 }
 
 /* OVERLAY */
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.3);
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.75),
+    rgba(0,0,0,0.2)
+  );
+  opacity: 0;
+  transition: 0.4s ease;
+
   display: flex;
   align-items: flex-end;
   padding: 15px;
-  opacity: 0;
-  transition: 0.3s;
 }
 
 /* CAPTION */
 .caption {
   color: white;
+  transform: translateY(20px);
+  transition: 0.4s ease;
 }
 
 .caption h6 {
@@ -203,41 +217,64 @@ const resetTilt = (index) => {
   opacity: 0.9;
 }
 
-/* HOVER */
+/* 🔥 HOVER EFFECT */
+.gallery-item:hover img {
+  transform: scale(1.12);
+  filter: brightness(0.95);
+}
+
 .gallery-item:hover .overlay {
   opacity: 1;
 }
 
-.btn-more {
-  background: #c0392b;
-  color: white;
-  border: none;
-  padding: 10px 22px;
-  border-radius: 999px;
-  font-size: 0.9rem;
-  transition: 0.3s ease;
+.gallery-item:hover .caption {
+  transform: translateY(0);
 }
 
-/* HOVER */
+/* EXTRA DEPTH */
+.gallery-item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.1);
+  opacity: 0;
+  transition: 0.4s;
+}
+
+.gallery-item:hover::after {
+  opacity: 1;
+}
+
+/* BUTTON */
+.btn-more {
+  background: #e74c3c;
+  color: white;
+  border-radius: 999px;
+  padding: 10px 22px;
+  border: none;
+}
+
 .btn-more:hover {
-  background: #a93226;
+  background: #c0392b;
   transform: translateY(-2px);
+  transition: all 0.3s ease;
 }
 
 /* LIGHTBOX */
 .lightbox {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.9);
+  background: rgba(0,0,0,0.95);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 9999;
 }
 
 .lightbox img {
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 95%;
+  max-height: 95%;
   border-radius: 10px;
 }
+
 </style>

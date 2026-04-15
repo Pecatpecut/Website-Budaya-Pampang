@@ -1,10 +1,10 @@
 <template>
-  <section class="berita-section">
+  <section class="postingan-section">
     <div class="container">
 
       <!-- TITLE -->
       <div class="section-header">
-        <h2 class="section-title">Berita</h2>
+        <h2 class="section-title">Postingan</h2>
         <div class="line"></div>
       </div>
 
@@ -13,13 +13,10 @@
 
         <div
           class="col-md-4"
-          v-for="item in beritaList"
+          v-for="item in postinganList"
           :key="item.id"
         >
-          <div
-            class="berita-card"
-            @click="goDetail(item.id)"
-          >
+          <div class="postingan-card" @click="goDetail(item.link)">
 
             <!-- IMAGE -->
             <div class="image-wrapper">
@@ -28,10 +25,7 @@
 
             <!-- TEXT -->
             <div class="content">
-              <h6 class="title">
-                {{ item.title }}
-              </h6>
-
+              <h6 class="title">{{ item.title }}</h6>
               <small class="meta">
                 {{ item.author }} • {{ item.date }}
               </small>
@@ -44,7 +38,7 @@
 
       <!-- BUTTON -->
       <div class="d-flex justify-content-end mt-4">
-        <button class="btn-more">
+        <button class="btn-more" @click="goTopostingan">
           Lebih Banyak →
         </button>
       </div>
@@ -59,50 +53,58 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const beritaList = ref([
+const postinganList = ref([
   {
     id: 1,
     title: 'Asal-Usul Desa Budaya Pampang',
     author: 'Admin',
     date: 'April 10, 2026',
-    image: new URL('@/assets/images/lamin.svg', import.meta.url).href
+    image: new URL('@/assets/images/lamin.svg', import.meta.url).href,
+    link: '/postingan/1'
   },
   {
     id: 2,
     title: 'Keunikan Tarian Dayak Kenyah',
     author: 'Admin',
     date: 'April 10, 2026',
-    image: new URL('@/assets/images/tarian.svg', import.meta.url).href
+    image: new URL('@/assets/images/tarian.svg', import.meta.url).href,
+    link: '/postingan/2'
   },
   {
     id: 3,
     title: 'Wisata Budaya yang Mendunia',
     author: 'Admin',
     date: 'April 10, 2026',
-    image: new URL('@/assets/images/susur-sungai.svg', import.meta.url).href
+    image: new URL('@/assets/images/susur-sungai.svg', import.meta.url).href,
+    link: '/postingan/3'
   }
 ])
 
-const goDetail = (id) => {
-  router.push(`/berita/${id}`)
+const goDetail = (link) => {
+  router.push(link)
+}
+
+const goTopostingan = () => {
+  router.push({
+    path: '/publikasi',
+    hash: '#postingan'
+  })
 }
 </script>
 
 <style scoped>
-
-.berita-section {
+.postingan-section {
   padding: 60px 0;
-  background: #ffffff;
 }
 
-/* HEADER */
 .section-header {
   margin-bottom: 40px;
 }
 
 .section-title {
   font-size: 1.8rem;
-  font-weight: 600;
+  font-weight: 500;
+  font-family: 'Playfair Display', serif;
 }
 
 .line {
@@ -113,9 +115,9 @@ const goDetail = (id) => {
 }
 
 /* CARD */
-.berita-card {
+.postingan-card {
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 
 /* IMAGE */
@@ -128,53 +130,45 @@ const goDetail = (id) => {
   width: 100%;
   height: 180px;
   object-fit: cover;
-  transition: 0.4s;
+  transition: 0.4s ease;
 }
 
-/* CONTENT */
-.content {
-  margin-top: 12px;
-}
-
-/* TITLE */
+/* TEXT */
 .title {
-  font-size: 0.95rem;
-  font-weight: 500;
-  margin-bottom: 5px;
-  color: #111;
+  transition: 0.3s;
 }
 
-/* META */
 .meta {
   color: #888;
   font-size: 0.8rem;
 }
 
 /* HOVER */
-.berita-card:hover img {
-  transform: scale(1.05);
+.postingan-card:hover {
+  transform: translateY(-6px);
 }
 
-.berita-card:hover {
-  transform: translateY(-4px);
+.postingan-card:hover img {
+  transform: scale(1.07);
+}
+
+.postingan-card:hover .title {
+  text-decoration: underline;
+  color: #c0392b;
 }
 
 /* BUTTON */
 .btn-more {
-  background: #c0392b;
+  background: #e74c3c;
   color: white;
-  border: none;
-  padding: 10px 22px;
   border-radius: 999px;
-  transition: 0.3s;
+  padding: 10px 22px;
+  border: none;
+  transition: all 0.3s ease;
 }
 
 .btn-more:hover {
-  background: #a93226;
+  background: #c0392b;
+  transform: translateY(-2px);
 }
-
-.title:hover {
-  text-decoration: underline;
-}
-
 </style>

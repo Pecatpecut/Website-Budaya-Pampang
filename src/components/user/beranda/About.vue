@@ -35,7 +35,7 @@
 
           <router-link 
             to="/tentang#sejarah-section"
-            class="btn btn-danger mt-3 px-4 py-2 rounded-pill"
+            class="btn btn-danger mt-3 px-4 py-2 rounded-pill btn-selengkapnya"
           >
             Selengkapnya →
           </router-link>
@@ -169,5 +169,11 @@ const resetTilt = () => {
   max-width: 500px;
   font-family: 'Inter';
   text-align: justify;
+}
+
+.btn-selengkapnya:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
 }
 </style>
