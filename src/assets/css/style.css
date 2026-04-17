@@ -8,23 +8,40 @@
   src: url('../fonts/Inter/static/Inter_28pt-Regular.ttf') format('truetype');
 }
 
-body{
+/* RESET */
+body {
+  margin: 0;
+  padding-top: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+/* 🔥 USER MODE (ADA NAVBAR) */
+.user-mode {
   padding-top: 70px;
 }
 
+/* 🔥 SCROLL PROGRESS */
 .scroll-progress {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 4px;
+  height: 3px;
   background: #c0392b;
-
   transform: scaleX(0);
   transform-origin: left;
-
   z-index: 9999;
-
-  /* smooth */
   transition: transform 0.1s linear;
+}
+
+/* 🔥 REVEAL */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: 0.8s ease;
+}
+
+.reveal.show {
+  opacity: 1;
+  transform: translateY(0);
 }

@@ -1,54 +1,59 @@
 <template>
-  <div class="scroll-progress"></div>
-  <navbar />
-  <router-view />
+  <div :class="isAdminRoute ? '' : 'user-mode'">
+
+    <!-- PROGRESS -->
+    <div class="scroll-progress"></div>
+
+    <!-- NAVBAR -->
+    <Navbar v-if="!isAdminRoute" />
+
+    <!-- CONTENT -->
+    <router-view />
+
+  </div>
 </template>
 
 <script setup>
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, computed, nextTick } from 'vue'
+import { useRoute } from 'vue-router'
 import Navbar from './components/user/Navbar.vue'
 
-let observer
+const route = useRoute()
+
+/* DETECT ADMIN */
+const isAdminRoute = computed(() => route.path.startsWith('/admin'))
+
+let observer = null
 let ticking = false
 
-/* =========================
-   SCROLL REVEAL
-========================= */
+/* 🔥 FIX: RESET OBSERVER */
 const initReveal = () => {
-  observer = new IntersectionObserver(
-    (entries, obs) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('show')
-          obs.unobserve(entry.target) // hemat performa
-        }
-      })
-    },
-    {
-      threshold: 0.15,
-      rootMargin: '0px 0px -50px 0px'
-    }
-  )
+  if (observer) observer.disconnect() // ✅ penting
+
+  observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('show')
+      }
+    })
+  }, {
+    threshold: 0.15,
+    rootMargin: '0px 0px -50px 0px'
+  })
 
   document.querySelectorAll('.reveal').forEach((el) => {
     observer.observe(el)
   })
 }
 
-/* =========================
-   SCROLL PROGRESS BAR
-========================= */
+/* SCROLL */
 const updateProgress = () => {
   const scrollTop = window.scrollY
-  const docHeight =
-    document.documentElement.scrollHeight - window.innerHeight
-
-  const progress = scrollTop / docHeight
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight
+  const progress = docHeight > 0 ? scrollTop / docHeight : 0
 
   const bar = document.querySelector('.scroll-progress')
-  if (bar) {
-    bar.style.transform = `scaleX(${progress})`
-  }
+  if (bar) bar.style.transform = `scaleX(${progress})`
 
   ticking = false
 }
@@ -60,10 +65,9 @@ const handleScroll = () => {
   }
 }
 
-/* =========================
-   LIFECYCLE
-========================= */
-onMounted(() => {
+/* 🔥 FIX: PAKAI onMounted SAJA */
+onMounted(async () => {
+  await nextTick()
   initReveal()
   window.addEventListener('scroll', handleScroll)
 })
