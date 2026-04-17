@@ -1,83 +1,85 @@
 <template>
-  <div class="container py-4">
-    <h3 class="mb-4">Manajemen Postingan</h3>
+  <div class="postingan-page">
 
-    <!-- FORM -->
-    <BeritaForm
-      :formData="form"
+    <div class="page-header">
+      <div>
+        <h2 class="page-title">Manajemen Postingan</h2>
+        <p class="page-sub">Kelola artikel dan berita seputar Desa Budaya Pampang</p>
+      </div>
+    </div>
+
+    <PostinganForm
+      v-model:formData="form"
       :isEdit="isEdit"
       @submit="handleSubmit"
       @cancel="resetForm"
     />
 
-    <!-- LIST -->
-    <BeritaList
-      :items="berita"
+    <PostinganList
+      :items="adminData.postingan"
       @edit="handleEdit"
       @delete="handleDelete"
     />
+
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { adminData } from '@/store/adminData.js'
+import PostinganForm from '@/components/admin/postingan/PostinganForm.vue'
+import PostinganList from '@/components/admin/postingan/PostinganList.vue'
 
-import BeritaForm from '@/components/admin/postingan/PostinganForm.vue'
-import BeritaList from '@/components/admin/postingan/PostinganList.vue'
-
-const berita = adminData.postingan
-
-const form = ref({
-  id: null,
-  title: '',
-  content: '',
-  image: ''
-})
-
+const form = ref({ id: null, title: '', content: '', image: '' })
 const isEdit = ref(false)
 
-// SUBMIT
 const handleSubmit = () => {
   if (!form.value.title || !form.value.content) return
 
   if (isEdit.value) {
-    const index = berita.findIndex(item => item.id === form.value.id)
-    if (index !== -1) {
-      berita[index] = { ...form.value }
-    }
+    const index = adminData.postingan.findIndex(item => item.id === form.value.id)
+    if (index !== -1) adminData.postingan[index] = { ...form.value }
   } else {
-    berita.push({
+    adminData.postingan.push({
       ...form.value,
-      id: Date.now()
+      id: Date.now(),
+      date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
     })
   }
 
   resetForm()
 }
 
-// EDIT
 const handleEdit = (item) => {
   form.value = { ...item }
   isEdit.value = true
 }
 
-// DELETE
 const handleDelete = (id) => {
-  const index = berita.findIndex(item => item.id === id)
-  if (index !== -1) {
-    berita.splice(index, 1)
-  }
+  const index = adminData.postingan.findIndex(item => item.id === id)
+  if (index !== -1) adminData.postingan.splice(index, 1)
 }
 
-// RESET
 const resetForm = () => {
-  form.value = {
-    id: null,
-    title: '',
-    content: '',
-    image: ''
-  }
+  form.value = { id: null, title: '', content: '', image: '' }
   isEdit.value = false
 }
 </script>
+
+<style scoped>
+.postingan-page { padding: 4px 0; }
+
+.page-header { margin-bottom: 24px; }
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.page-sub {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+}
+</style>

@@ -1,158 +1,103 @@
 <template>
-  <aside 
-    class="sidebar"
-    :class="{ collapsed, open: isOpen }"
-  >
+  <aside :class="['sidebar', { collapsed }]">
 
+    <!-- TOP -->
     <div class="top">
 
-      <div class="logo-row">
-        <h2 class="logo">
-          Desa Budaya <span>Pampang</span>
-        </h2>
-
-        <button 
-          class="toggle"
-          @click="handleToggle"
-        >
-          <Menu />
-        </button>
+      <!-- LOGO (HILANG SAAT COLLAPSE) -->
+      <div class="logo" v-if="!collapsed">
+        <span class="main">Desa Budaya</span>
+        <span class="highlight">Pampang</span>
       </div>
 
-      <nav>
-
-        <!-- DASHBOARD -->
-        <RouterLink 
-          to="/admin"
-          class="nav-item"
-          :class="{ active: isDashboard }"
-          @click="handleNavClick"
-        >
-          <LayoutDashboard class="icon" />
-          <span v-if="!collapsed">Dashboard</span>
-        </RouterLink>
-
-        <!-- AGENDA -->
-        <RouterLink 
-          to="/admin/agenda"
-          class="nav-item"
-          active-class="active"
-          @click="handleNavClick"
-        >
-          <Calendar class="icon" />
-          <span v-if="!collapsed">Agenda</span>
-        </RouterLink>
-
-        <!-- GALERI -->
-        <RouterLink 
-          to="/admin/galeri"
-          class="nav-item"
-          active-class="active"
-          @click="handleNavClick"
-        >
-          <Image class="icon" />
-          <span v-if="!collapsed">Galeri</span>
-        </RouterLink>
-
-        <!-- POSTINGAN -->
-        <RouterLink 
-          to="/admin/postingan"
-          class="nav-item"
-          active-class="active"
-          @click="handleNavClick"
-        >
-          <FileText class="icon" />
-          <span v-if="!collapsed">Postingan</span>
-        </RouterLink>
-
-        <!-- KONTAK -->
-        <RouterLink 
-          to="/admin/kontak"
-          class="nav-item"
-          active-class="active"
-          @click="handleNavClick"
-        >
-          <Phone class="icon" />
-          <span v-if="!collapsed">Kontak</span>
-        </RouterLink>
-
-      </nav>
+      <!-- TOGGLE -->
+      <button class="toggle-btn" @click="emit('toggleCollapse')">
+        <i class="bi bi-list"></i>
+      </button>
 
     </div>
 
-    <button class="logout" @click="handleLogout">
-      <LogOut class="icon" />
-      <span v-if="!collapsed">Logout</span>
-    </button>
+    <!-- MENU -->
+    <nav class="menu">
+
+      <RouterLink 
+        to="/admin" 
+        class="menu-item"
+        :class="{ active: route.path === '/admin' }"
+        :title="collapsed ? 'Dashboard' : ''"
+      >
+        <i class="bi bi-grid"></i>
+        <span v-if="!collapsed">Dashboard</span>
+      </RouterLink>
+
+      <RouterLink 
+        to="/admin/agenda" 
+        class="menu-item"
+        :class="{ active: route.path.includes('/admin/agenda') }"
+        :title="collapsed ? 'Agenda' : ''"
+      >
+        <i class="bi bi-calendar"></i>
+        <span v-if="!collapsed">Agenda</span>
+      </RouterLink>
+
+      <RouterLink 
+        to="/admin/galeri" 
+        class="menu-item"
+        :class="{ active: route.path.includes('/admin/galeri') }"
+        :title="collapsed ? 'Galeri' : ''"
+      >
+        <i class="bi bi-image"></i>
+        <span v-if="!collapsed">Galeri</span>
+      </RouterLink>
+
+      <RouterLink 
+        to="/admin/postingan" 
+        class="menu-item"
+        :class="{ active: route.path.includes('/admin/postingan') }"
+        :title="collapsed ? 'Postingan' : ''"
+      >
+        <i class="bi bi-file-text"></i>
+        <span v-if="!collapsed">Postingan</span>
+      </RouterLink>
+
+      <RouterLink 
+        to="/admin/kontak" 
+        class="menu-item"
+        :class="{ active: route.path.includes('/admin/kontak') }"
+        :title="collapsed ? 'Kontak' : ''"
+      >
+        <i class="bi bi-envelope"></i>
+        <span v-if="!collapsed">Kontak</span>
+      </RouterLink>
+
+    </nav>
+
+    <!-- LOGOUT -->
+    <div class="logout">
+      <button class="logout-btn" @click="handleLogout">
+        <i class="bi bi-box-arrow-right"></i>
+        <span v-if="!collapsed">Logout</span>
+      </button>
+    </div>
 
   </aside>
-
-  <div 
-    class="overlay" 
-    v-if="isOpen"
-    @click="$emit('closeMobile')"
-  ></div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import {
-  LayoutDashboard,
-  Calendar,
-  Image,
-  Menu,
-  LogOut
-} from 'lucide-vue-next'
-
-const props = defineProps({
-  isOpen: Boolean,
+defineProps({
   collapsed: Boolean
 })
 
-const emit = defineEmits(['toggleCollapse', 'closeMobile'])
+const emit = defineEmits(['toggleCollapse'])
 
 const route = useRoute()
 const router = useRouter()
 
-/* FIX: Dashboard hanya active kalau path PERSIS /admin */
-const isDashboard = computed(() => route.path === '/admin')
-
-/* LOGOUT */
 const handleLogout = () => {
   localStorage.removeItem('token')
   router.push('/login')
-}
-
-/* FIX RESPONSIVE */
-const isMobile = ref(false)
-
-const handleResize = () => {
-  isMobile.value = window.innerWidth <= 768
-}
-
-onMounted(() => {
-  handleResize()
-  window.addEventListener('resize', handleResize)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', handleResize)
-})
-
-/* TOGGLE */
-const handleToggle = () => {
-  if (isMobile.value) {
-    emit('closeMobile')
-  } else {
-    emit('toggleCollapse')
-  }
-}
-
-/* CLOSE MOBILE */
-const handleNavClick = () => {
-  if (isMobile.value) emit('closeMobile')
 }
 </script>
 
@@ -163,160 +108,178 @@ const handleNavClick = () => {
   width: 240px;
   height: 100vh;
   position: fixed;
-  background: #0f0f0f;
+  top: 0;
+  left: 0;
+
+  background: var(--black);
   color: white;
-  padding: 24px 16px;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: 0.3s;
-  z-index: 1001;
+
+  padding: 20px 14px;
+  transition: 0.3s ease;
+  z-index: 100;
 }
 
 /* COLLAPSE */
 .sidebar.collapsed {
   width: 70px;
-  padding: 24px 10px;
 }
 
 /* TOP */
 .top {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+/* CENTER SAAT COLLAPSE */
+.sidebar.collapsed .top {
+  justify-content: center;
 }
 
 /* LOGO */
 .logo {
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
-.logo span {
-  color: #c0392b;
-}
-
-/* HIDE LOGO */
-.sidebar.collapsed .logo {
-  display: none;
-}
-
-/* LOGO ROW */
-.logo-row {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  font-weight: 600;
+  line-height: 1.2;
 }
 
-/* TOGGLE BUTTON */
-.toggle {
-  background: rgba(255,255,255,0.06);
+.logo .main {
+  font-size: 14px;
+}
+
+.logo .highlight {
+  font-size: 18px;
+  color: var(--red);
+}
+
+/* TOGGLE */
+.toggle-btn {
+  background: rgba(255,255,255,0.08);
   border: none;
   color: white;
-  padding: 10px;
-  border-radius: 10px;
+  padding: 8px;
+  border-radius: 8px;
   cursor: pointer;
   transition: 0.2s;
 }
 
-.toggle:hover {
-  background: rgba(255,255,255,0.12);
-  transform: scale(1.05);
+.toggle-btn:hover {
+  background: rgba(255,255,255,0.2);
 }
 
-/* NAV */
-nav {
-  margin-top: 30px;
+/* COLLAPSE STYLE */
+.sidebar.collapsed .toggle-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+
+/* MENU */
+.menu {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-/* ITEM */
-.nav-item {
+.menu-item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 14px;
+
+  padding: 10px 12px;
   border-radius: 12px;
-  color: #aaa;
+
+  color: #ccc;
   text-decoration: none;
-  transition: 0.2s;
-}
-
-.nav-item:hover {
-  background: rgba(255,255,255,0.05);
-  color: white;
-}
-
-/* COLLAPSE MODE */
-.sidebar.collapsed .nav-item {
-  justify-content: center;
-}
-
-.sidebar.collapsed .nav-item span {
-  display: none;
-}
-
-/* ACTIVE */
-.nav-item.active {
-  background: linear-gradient(
-    90deg,
-    rgba(192,57,43,0.25),
-    rgba(192,57,43,0.1)
-  );
-  color: white;
+  transition: 0.25s;
 }
 
 /* ICON */
-.icon {
-  width: 18px;
+.menu-item i {
+  font-size: 18px;
+}
+
+/* HOVER */
+.menu-item:hover {
+  background: rgba(255,255,255,0.05);
+  color: white;
+  transform: translateX(4px);
+}
+
+/* ACTIVE */
+.menu-item.active {
+  background: rgba(165,42,42,0.2);
+  color: white;
+}
+
+.menu-item.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 20%;
+  width: 4px;
+  height: 60%;
+  background: var(--red);
+  border-radius: 4px;
+}
+
+/* COLLAPSE MENU */
+.sidebar.collapsed .menu-item {
+  justify-content: center;
+}
+
+.sidebar.collapsed .menu-item span {
+  display: none;
 }
 
 /* LOGOUT */
 .logout {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  margin-top: auto;
+}
+
+.logout-btn {
+  width: 100%;
   background: #c0392b;
   border: none;
-  padding: 13px;
-  border-radius: 999px;
   color: white;
-  cursor: pointer;
-  transition: 0.2s;
-}
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 500;
 
-.logout:hover {
-  transform: scale(1.03);
-}
-
-/* COLLAPSE LOGOUT */
-.sidebar.collapsed .logout {
+  display: flex;
+  align-items: center;
   justify-content: center;
+  gap: 8px;
+
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
-.sidebar.collapsed .logout span {
+/* HOVER (NO GLOW) */
+.logout-btn:hover {
+  background: #a93226;
+  transform: translateY(-1px);
+}
+
+/* CLICK */
+.logout-btn:active {
+  transform: scale(0.98);
+}
+
+/* COLLAPSE MODE */
+.sidebar.collapsed .logout-btn span {
   display: none;
 }
 
-/* MOBILE */
-@media (max-width: 768px) {
-  .sidebar {
-    transform: translateX(-100%);
-  }
-
-  .sidebar.open {
-    transform: translateX(0);
-  }
-}
-
-/* OVERLAY */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  z-index: 1000;
+.sidebar.collapsed .logout-btn {
+  padding: 12px 0;
 }
 
 </style>

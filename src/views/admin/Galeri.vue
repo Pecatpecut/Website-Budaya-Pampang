@@ -1,81 +1,85 @@
 <template>
-  <div class="container py-4">
-    <h3 class="mb-4">Manajemen Galeri</h3>
+  <div class="galeri-page">
 
-    <!-- FORM -->
+    <div class="page-header">
+      <div>
+        <h2 class="page-title">Manajemen Galeri</h2>
+        <p class="page-sub">Kelola foto dan gambar kegiatan desa</p>
+      </div>
+    </div>
+
     <GaleriForm
-      :formData="form"
+      v-model:formData="form"
       :isEdit="isEdit"
       @submit="handleSubmit"
       @cancel="resetForm"
     />
 
-    <!-- GRID -->
     <GaleriGrid
-      :items="galeri"
+      :items="adminData.galeri"
       @edit="handleEdit"
       @delete="handleDelete"
     />
+
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { adminData } from '@/store/adminData.js'
-
 import GaleriForm from '@/components/admin/galeri/GaleriForm.vue'
 import GaleriGrid from '@/components/admin/galeri/GaleriGrid.vue'
 
-const galeri = adminData.galeri
-
-const form = ref({
-  id: null,
-  title: '',
-  image: ''
-})
-
+const form = ref({ id: null, title: '', image: '' })
 const isEdit = ref(false)
 
-// SUBMIT
 const handleSubmit = () => {
   if (!form.value.title || !form.value.image) return
 
   if (isEdit.value) {
-    const index = galeri.findIndex(item => item.id === form.value.id)
-    if (index !== -1) {
-      galeri[index] = { ...form.value }
-    }
+    const index = adminData.galeri.findIndex(item => item.id === form.value.id)
+    if (index !== -1) adminData.galeri[index] = { ...form.value }
   } else {
-    galeri.push({
-      ...form.value,
-      id: Date.now()
-    })
+    adminData.galeri.push({ ...form.value, id: Date.now() })
   }
 
   resetForm()
 }
 
-// EDIT
 const handleEdit = (item) => {
   form.value = { ...item }
   isEdit.value = true
 }
 
-// DELETE
 const handleDelete = (id) => {
-  const index = galeri.findIndex(item => item.id === id)
-  if (index !== -1) {
-    galeri.splice(index, 1)
-  }
+  const index = adminData.galeri.findIndex(item => item.id === id)
+  if (index !== -1) adminData.galeri.splice(index, 1)
 }
 
-// RESET
 const resetForm = () => {
-  form.value = {
-    id: null,
-    title: '',
-    image: ''
-  }
+  form.value = { id: null, title: '', image: '' }
   isEdit.value = false
 }
 </script>
+
+<style scoped>
+.galeri-page {
+  padding: 4px 0;
+}
+
+.page-header {
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.page-sub {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+}
+</style>

@@ -1,17 +1,23 @@
 <template>
-  <div class="stats">
+  <div class="stats-grid">
 
-    <div 
-      class="card"
+    <div
+      class="stat-card"
       v-for="item in stats"
       :key="item.label"
     >
-      <div class="card-header">
-        <p>{{ item.label }}</p>
-        <component :is="item.icon" class="icon" />
+      <div class="stat-icon">
+        <component :is="item.icon" :size="22" />
       </div>
 
-      <h2>{{ item.value }}</h2>
+      <div class="stat-body">
+        <div class="stat-value">{{ item.value }}</div>
+        <div class="stat-label">{{ item.label }}</div>
+      </div>
+
+      <div class="stat-arrow">
+        <i class="bi bi-arrow-up-right"></i>
+      </div>
     </div>
 
   </div>
@@ -27,58 +33,96 @@ defineProps({
 </script>
 
 <style scoped>
-.stats {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
-.card {
-  flex: 1;
+.stat-card {
   background: white;
-  padding: 18px;
-  border-radius: 14px;
-  border: 1px solid #eee;
-  transition: 0.25s ease;
-  cursor: pointer;
-}
-
-.card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-}
-
-/* HEADER */
-.card-header {
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #f0f0f0;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: #f5f5f5;
-  padding: 10px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  gap: 16px;
+  transition: 0.25s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
 
-.card-header p {
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--red);
+  border-radius: 4px 0 0 4px;
+  opacity: 0;
+  transition: 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.07);
+}
+
+.stat-card:hover::before {
+  opacity: 1;
+}
+
+/* ICON */
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  background: #fff4f4;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--red);
+  flex-shrink: 0;
+}
+
+/* BODY */
+.stat-body {
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 30px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1;
+}
+
+.stat-label {
   font-size: 13px;
-  color: #777;
-  margin: 0;
+  color: #888;
+  margin-top: 4px;
 }
 
-.icon {
-  width: 18px;
-  color: #555;
+/* ARROW */
+.stat-arrow {
+  color: #ccc;
+  font-size: 18px;
+  transition: 0.2s;
 }
 
-h2 {
-  margin: 0;
-  font-size: 28px;
+.stat-card:hover .stat-arrow {
+  color: var(--red);
+  transform: translate(2px, -2px);
 }
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-  .stats {
-    flex-direction: column;
+  .stats-grid {
+    grid-template-columns: 1fr;
   }
 }
 </style>

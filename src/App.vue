@@ -1,11 +1,11 @@
 <template>
-  <div :class="isAdminRoute ? '' : 'user-mode'">
+  <div :class="{ 'user-mode': !route.meta.isAdmin && !route.meta.isAuth }">
 
     <!-- PROGRESS -->
     <div class="scroll-progress"></div>
 
     <!-- NAVBAR -->
-    <Navbar v-if="!isAdminRoute" />
+    <Navbar v-if="!route.meta.hideNavbar" />
 
     <!-- CONTENT -->
     <router-view />

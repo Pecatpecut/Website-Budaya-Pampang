@@ -1,3 +1,4 @@
+/* ================= FONT ================= */
 @font-face {
   font-family: 'Playfair Display';
   src: url('../fonts/Playfair_Display/PlayfairDisplay-Italic-VariableFont_wght.ttf') format('truetype');
@@ -8,33 +9,50 @@
   src: url('../fonts/Inter/static/Inter_28pt-Regular.ttf') format('truetype');
 }
 
-/* RESET */
+/* ================= ROOT ================= */
+:root {
+  --black: #1A1A1A;
+  --red: #A52A2A;
+  --red-dark: #8B2323;
+  --yellow: #f4c542;
+  --white: #ffffff;
+
+  --gray-bg: #f7f7f7;
+  --text-muted: #888;
+
+  --radius: 4px;
+  --transition: 0.25s;
+}
+
+/* ================= RESET ================= */
 body {
   margin: 0;
   padding-top: 0;
   font-family: 'Inter', sans-serif;
+  background: var(--gray-bg);
+  color: var(--black);
 }
 
-/* 🔥 USER MODE (ADA NAVBAR) */
+/* ================= USER MODE ================= */
 .user-mode {
   padding-top: 70px;
 }
 
-/* 🔥 SCROLL PROGRESS */
+/* ================= SCROLL PROGRESS ================= */
 .scroll-progress {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 3px;
-  background: #c0392b;
+  background: var(--red);
   transform: scaleX(0);
   transform-origin: left;
   z-index: 9999;
   transition: transform 0.1s linear;
 }
 
-/* 🔥 REVEAL */
+/* ================= REVEAL ================= */
 .reveal {
   opacity: 0;
   transform: translateY(40px);
@@ -44,4 +62,64 @@ body {
 .reveal.show {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ================= SECTION ================= */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* ================= BUTTON ================= */
+.btn-primary {
+  background: var(--red);
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 500;
+  transition: var(--transition);
+  color: var(--white);
+}
+
+.btn-primary:hover {
+  background: var(--red-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(165,42,42,0.25);
+}
+
+/* klik effect (hilangin biru) */
+.btn:focus,
+.btn:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+/* SMALL BUTTON */
+.btn-sm {
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+/* ================= CARD ================= */
+.section-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-top: 20px;
+  border: 1px solid #f1f1f1;
+  transition: var(--transition);
+}
+
+.section-card:hover {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* ================= TEXT ================= */
+.text-muted {
+  color: var(--text-muted);
 }

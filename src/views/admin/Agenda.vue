@@ -1,187 +1,169 @@
 <template>
-  <div class="container py-4">
-    <h3 class="mb-4">Manajemen Agenda</h3>
+  <div class="agenda-page">
 
-    <!-- FORM -->
-    <AgendaForm
-      :formData="form"
-      :isEdit="isEdit"
-      @submit="handleSubmit"
-      @cancel="resetForm"
+    <div class="page-header">
+      <div>
+        <h2 class="page-title">Manajemen Agenda</h2>
+        <p class="page-sub">Kelola jadwal kegiatan Desa Budaya Pampang</p>
+      </div>
+    </div>
+
+    <AgendaForm @add="handleAdd" @error="showToast" />
+
+    <AgendaToolbar
+      v-model:search="search"
+      v-model:sort="sortBy"
     />
 
-    <!-- LIST -->
     <AgendaList
-      :items="agenda"
-      @edit="handleEdit"
-      @delete="handleDelete"
+      :agenda="filteredData"
+      @delete="openConfirm"
+      @edit="openEdit"
     />
+
+    <!-- EMPTY STATE -->
+    <div v-if="filteredData.length === 0" class="empty-state">
+      <i class="bi bi-calendar-x"></i>
+      <p>Tidak ada agenda ditemukan</p>
+    </div>
+
+    <!-- MODALS -->
+    <ConfirmModal
+      :show="showConfirm"
+      @close="showConfirm = false"
+      @confirm="confirmDelete"
+    />
+
+    <AgendaEditModal
+      :show="showEdit"
+      :data="selectedItem"
+      @close="showEdit = false"
+      @save="handleEdit"
+    />
+
+    <Toast :toasts="toasts" />
+
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { adminData } from '@/store/adminData.js'
+import { ref, computed } from 'vue'
+import { adminData } from '@/store/adminData'
 
 import AgendaForm from '@/components/admin/agenda/AgendaForm.vue'
 import AgendaList from '@/components/admin/agenda/AgendaList.vue'
+import AgendaToolbar from '@/components/admin/agenda/AgendaToolbar.vue'
+import AgendaEditModal from '@/components/admin/agenda/AgendaEditModal.vue'
+import ConfirmModal from '@/components/ui/ConfirmModal.vue'
+import Toast from '@/components/ui/Toast.vue'
 
-const agenda = adminData.agenda
+const search = ref('')
+const sortBy = ref('newest')
 
-const form = ref({
-  id: null,
-  title: '',
-  date: ''
+/* TOAST */
+const toasts = ref([])
+const showToast = (msg, type = 'success') => {
+  toasts.value.push({ message: msg, type })
+  setTimeout(() => toasts.value.shift(), 2500)
+}
+
+/* ADD — data pakai field: title, date, time, location */
+const handleAdd = (data) => {
+  adminData.agenda.push({ id: Date.now(), ...data })
+  showToast('Agenda berhasil ditambahkan!')
+}
+
+/* DELETE */
+const showConfirm = ref(false)
+const selectedId = ref(null)
+
+const openConfirm = (id) => {
+  selectedId.value = id
+  showConfirm.value = true
+}
+
+const confirmDelete = () => {
+  adminData.agenda = adminData.agenda.filter(a => a.id !== selectedId.value)
+  showToast('Agenda berhasil dihapus', 'error')
+  showConfirm.value = false
+}
+
+/* EDIT */
+const showEdit = ref(false)
+const selectedItem = ref(null)
+
+const openEdit = (item) => {
+  selectedItem.value = { ...item }
+  showEdit.value = true
+}
+
+const handleEdit = (updated) => {
+  const index = adminData.agenda.findIndex(a => a.id === updated.id)
+  if (index !== -1) adminData.agenda[index] = updated
+  showToast('Agenda berhasil diperbarui!')
+  showEdit.value = false
+}
+
+/* FILTER + SORT — field: title & date */
+const filteredData = computed(() => {
+  let data = [...adminData.agenda]
+
+  if (search.value) {
+    data = data.filter(item =>
+      (item.title || '').toLowerCase().includes(search.value.toLowerCase()) ||
+      (item.date || '').includes(search.value)
+    )
+  }
+
+  data.sort((a, b) =>
+    sortBy.value === 'newest'
+      ? new Date(b.date) - new Date(a.date)
+      : new Date(a.date) - new Date(b.date)
+  )
+
+  return data
 })
-
-const isEdit = ref(false)
-
-const handleSubmit = () => {
-  if (!form.value.title || !form.value.date) return
-
-  if (isEdit.value) {
-    // ✅ UPDATE DATA
-    const index = agenda.findIndex(item => item.id === form.value.id)
-    if (index !== -1) {
-      agenda[index] = { ...form.value }
-    }
-  } else {
-    // ✅ TAMBAH DATA
-    agenda.push({
-      ...form.value,
-      id: Date.now()
-    })
-  }
-
-  resetForm()
-}
-
-const handleEdit = (item) => {
-  form.value = { ...item }
-  isEdit.value = true
-}
-
-const handleDelete = (id) => {
-  const index = agenda.findIndex(item => item.id === id)
-  if (index !== -1) {
-    agenda.splice(index, 1)
-  }
-}
-
-const resetForm = () => {
-  form.value = {
-    id: null,
-    title: '',
-    date: ''
-  }
-  isEdit.value = false
-}
 </script>
 
 <style scoped>
-
-/* PAGE */
-.page {
-  background: white;
-  padding: 25px;
-  border-radius: 16px;
+.agenda-page {
+  padding: 4px 0;
 }
 
-/* HEADER */
-.top-bar {
+.page-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 25px;
+  align-items: flex-start;
+  margin-bottom: 24px;
 }
 
-/* BUTTON */
-.btn {
-  padding: 10px 16px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: #1a1a1a;
 }
 
-.primary {
-  background: #c0392b;
-  color: white;
+.page-sub {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
 }
 
-.cancel {
-  background: #eee;
+/* EMPTY STATE */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #bbb;
 }
 
-/* LIST */
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.card {
-  display: flex;
-  justify-content: space-between;
-  background: #fafafa;
-  padding: 16px;
-  border-radius: 12px;
-}
-
-.time {
+.empty-state i {
+  font-size: 48px;
   display: block;
-  margin-top: 6px;
-  color: #777;
+  margin-bottom: 12px;
 }
 
-/* ACTION */
-.actions {
-  display: flex;
-  gap: 10px;
+.empty-state p {
+  font-size: 15px;
 }
-
-.edit {
-  background: transparent;
-  border: none;
-  color: #c0392b;
-}
-
-.delete {
-  background: #c0392b;
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-}
-
-/* MODAL */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  width: 300px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.modal input {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
 </style>

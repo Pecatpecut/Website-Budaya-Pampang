@@ -25,13 +25,15 @@ const routes = [
   { path: '/kontak', component: Kontak },
 
   /* ===== LOGIN ===== */
-  { path: '/login', component: Login },
+  { path: '/login', component: Login,
+    meta: { hideNavbar: true, isAuth: true }
+   },
 
   /* ===== ADMIN ROUTES (butuh login) ===== */
   {
     path: '/admin',
     component: DashboardLayout,
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, hideNavbar: true, isAdmin: true},
     children: [
       { path: '', component: Home },
       { path: 'galeri', component: Galeri },

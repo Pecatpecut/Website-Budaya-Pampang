@@ -1,125 +1,127 @@
 <template>
-  <div class="section">
+  <div class="section-card">
 
-    <div class="header">
-      <h3>Agenda Mendatang</h3>
-      <button class="btn" @click="goAgenda">Lihat Semua</button>
+    <div class="section-header">
+      <h5>Agenda Mendatang</h5>
+      <button class="btn btn-primary btn-sm" @click="router.push('/admin/agenda')">
+        Lihat Semua
+      </button>
+    </div>
+
+    <div v-if="items.length === 0" class="empty">
+      <i class="bi bi-calendar3 me-2"></i>Belum ada agenda
     </div>
 
     <div
-      class="agenda-item"
-      v-for="item in agenda"
+      v-for="item in items"
       :key="item.id"
+      class="agenda-item"
     >
-      <div class="date-box">
-        <span class="tanggal">{{ item.tanggal }}</span>
-        <span class="jam">{{ item.jam }}</span>
+      <div class="agenda-date">
+        <span class="day">{{ formatDay(item.date) }}</span>
+        <span class="month">{{ formatMonth(item.date) }}</span>
+        <span class="time">{{ item.time }}</span>
       </div>
 
-      <div class="info">
-        <h4>{{ item.title }}</h4>
-        <p>{{ item.tempat }}</p>
+      <div class="agenda-info">
+        <div class="title">{{ item.title }}</div>
+        <div class="location">
+          <i class="bi bi-geo-alt me-1"></i>{{ item.location }}
+        </div>
       </div>
+
     </div>
-
-    <p v-if="agenda.length === 0" class="empty">Tidak ada agenda.</p>
 
   </div>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
+const router = useRouter()
 
 defineProps({
-  agenda: {
-    type: Array,
-    default: () => []
-  }
+  items: { type: Array, default: () => [] }
 })
 
-const router = useRouter()
-const goAgenda = () => router.push('/admin/agenda')
+const formatDay = (d) => d ? new Date(d).toLocaleDateString('id-ID', { day: '2-digit' }) : '--'
+const formatMonth = (d) => d ? new Date(d).toLocaleDateString('id-ID', { month: 'short' }) : ''
 </script>
 
 <style scoped>
-.section {
-  background: white;
-  padding: 20px;
-  border-radius: 14px;
-  margin-bottom: 25px;
-}
-
-.header {
+.section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
 }
 
-.header h3 {
-  font-size: 16px;
+.section-header h5 {
   font-weight: 600;
+  margin: 0;
 }
 
-.btn {
-  font-size: 13px;
-  background: #c0392b;
-  color: white;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 8px;
-  cursor: pointer;
+.empty {
+  text-align: center;
+  color: #bbb;
+  padding: 30px 0;
+  font-size: 14px;
 }
 
 .agenda-item {
   display: flex;
-  gap: 14px;
-  align-items: center;
+  gap: 16px;
   padding: 12px 0;
-  border-bottom: 1px solid #f0f0f0;
+  align-items: center;
+  border-bottom: 1px solid #f5f5f5;
 }
 
 .agenda-item:last-child {
   border-bottom: none;
 }
 
-.date-box {
+.agenda-date {
+  background: linear-gradient(135deg, #fff4e0, #ffeac6);
+  border-radius: 10px;
+  padding: 10px 12px;
+  min-width: 64px;
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #f5f5f5;
-  padding: 8px 12px;
-  border-radius: 10px;
-  min-width: 90px;
-  text-align: center;
+  gap: 2px;
 }
 
-.tanggal {
-  font-size: 12px;
-  color: #555;
+.day {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--red);
+  line-height: 1;
 }
 
-.jam {
-  font-size: 14px;
-  font-weight: 600;
-  color: #c0392b;
-}
-
-.info h4 {
-  margin: 0 0 4px;
-  font-size: 14px;
-}
-
-.info p {
-  margin: 0;
-  font-size: 12px;
+.month {
+  font-size: 11px;
   color: #888;
+  text-transform: capitalize;
 }
 
-.empty {
-  color: #aaa;
-  font-size: 13px;
-  text-align: center;
-  padding: 20px 0;
+.time {
+  font-size: 11px;
+  font-weight: 600;
+  color: #555;
+  background: white;
+  padding: 2px 6px;
+  border-radius: 20px;
+  margin-top: 4px;
+}
+
+.agenda-info .title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.agenda-info .location {
+  font-size: 12px;
+  color: var(--text-muted, #888);
 }
 </style>

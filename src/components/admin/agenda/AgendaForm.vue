@@ -1,111 +1,177 @@
 <template>
-  <div class="mb-4">
-    <form @submit.prevent="$emit('submit')">
-      <div class="row g-2">
-        <div class="col-md-5">
-          <input
-            v-model="localForm.title"
-            type="text"
-            class="form-control"
-            placeholder="Judul agenda"
-          />
-        </div>
+  <div class="form-card">
 
-        <div class="col-md-4">
-          <input
-            v-model="localForm.date"
-            type="date"
-            class="form-control"
-          />
-        </div>
+    <h5 class="form-title">
+      <i class="bi bi-plus-circle me-2"></i>Tambah Agenda
+    </h5>
 
-        <div class="col-md-3 d-flex gap-2">
-          <button class="btn btn-primary w-100">
-            {{ isEdit ? 'Update' : 'Tambah' }}
-          </button>
+    <div class="row g-3">
 
-          <button
-            v-if="isEdit"
-            type="button"
-            class="btn btn-secondary w-100"
-            @click="$emit('cancel')"
-          >
-            Batal
-          </button>
-        </div>
+      <div class="col-md-6">
+        <label class="form-label">Judul Kegiatan</label>
+        <input
+          v-model="form.title"
+          class="form-input"
+          :class="{ 'is-error': errors.title }"
+          placeholder="Masukkan judul agenda..."
+        />
+        <span v-if="errors.title" class="err-msg">{{ errors.title }}</span>
       </div>
-    </form>
+
+      <div class="col-md-3">
+        <label class="form-label">Tanggal</label>
+        <input
+          v-model="form.date"
+          type="date"
+          class="form-input"
+          :class="{ 'is-error': errors.date }"
+        />
+        <span v-if="errors.date" class="err-msg">{{ errors.date }}</span>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label">Waktu</label>
+        <input
+          v-model="form.time"
+          type="time"
+          class="form-input"
+          :class="{ 'is-error': errors.time }"
+        />
+        <span v-if="errors.time" class="err-msg">{{ errors.time }}</span>
+      </div>
+
+      <div class="col-md-9">
+        <label class="form-label">Lokasi</label>
+        <input
+          v-model="form.location"
+          class="form-input"
+          :class="{ 'is-error': errors.location }"
+          placeholder="Masukkan lokasi kegiatan..."
+        />
+        <span v-if="errors.location" class="err-msg">{{ errors.location }}</span>
+      </div>
+
+      <div class="col-md-3 d-flex align-items-end">
+        <button class="btn-submit w-100" @click="submit">
+          <i class="bi bi-plus-lg me-1"></i> Tambah Agenda
+        </button>
+      </div>
+
+    </div>
+
   </div>
 </template>
 
 <script setup>
-import { watch, reactive } from 'vue'
+import { reactive } from 'vue'
 
-const props = defineProps({
-  formData: Object,
-  isEdit: Boolean
-})
+const emit = defineEmits(['add', 'error'])
 
-const emit = defineEmits(['submit', 'cancel'])
-
-const localForm = reactive({
-  id: null,
+const form = reactive({
   title: '',
-  date: ''
+  date: '',
+  time: '',
+  location: ''
 })
 
-// sync props → local
-watch(
-  () => props.formData,
-  (val) => {
-    Object.assign(localForm, val)
-  },
-  { immediate: true, deep: true }
-)
+const errors = reactive({
+  title: '',
+  date: '',
+  time: '',
+  location: ''
+})
 
-// sync local → parent
-watch(
-  localForm,
-  (val) => {
-    Object.assign(props.formData, val)
-  },
-  { deep: true }
-)
+const validate = () => {
+  let valid = true
+  errors.title = form.title ? '' : 'Judul wajib diisi'
+  errors.date = form.date ? '' : 'Tanggal wajib diisi'
+  errors.time = form.time ? '' : 'Waktu wajib diisi'
+  errors.location = form.location ? '' : 'Lokasi wajib diisi'
+  if (errors.title || errors.date || errors.time || errors.location) valid = false
+  return valid
+}
+
+const submit = () => {
+  if (!validate()) {
+    emit('error', 'Semua field wajib diisi', 'error')
+    return
+  }
+  emit('add', { ...form })
+  form.title = ''
+  form.date = ''
+  form.time = ''
+  form.location = ''
+}
 </script>
 
 <style scoped>
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal {
+.form-card {
   background: white;
-  padding: 20px;
   border-radius: 14px;
-  width: 300px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  padding: 24px;
+  border: 1px solid #f0f0f0;
+  margin-bottom: 20px;
 }
 
-input {
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+.form-title {
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #1a1a1a;
+  font-size: 15px;
 }
 
-.actions {
-  display: flex;
-  justify-content: space-between;
+.form-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 6px;
+  display: block;
 }
 
-.save {
-  background: #c0392b;
+.form-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+  background: #fafafa;
+}
+
+.form-input:focus {
+  border-color: var(--red);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(165,42,42,0.08);
+}
+
+.form-input.is-error {
+  border-color: #e74c3c;
+  background: #fff5f5;
+}
+
+.err-msg {
+  font-size: 12px;
+  color: #e74c3c;
+  margin-top: 4px;
+  display: block;
+}
+
+.btn-submit {
+  background: var(--red);
   color: white;
+  border: none;
+  padding: 11px 20px;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+  white-space: nowrap;
+}
+
+.btn-submit:hover {
+  background: var(--red-dark, #8b2323);
+  transform: translateY(-1px);
 }
 </style>
