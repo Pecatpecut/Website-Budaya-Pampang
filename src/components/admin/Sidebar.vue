@@ -54,6 +54,28 @@
           <span v-if="!collapsed">Galeri</span>
         </RouterLink>
 
+        <!-- POSTINGAN -->
+        <RouterLink 
+          to="/admin/postingan"
+          class="nav-item"
+          active-class="active"
+          @click="handleNavClick"
+        >
+          <FileText class="icon" />
+          <span v-if="!collapsed">Postingan</span>
+        </RouterLink>
+
+        <!-- KONTAK -->
+        <RouterLink 
+          to="/admin/kontak"
+          class="nav-item"
+          active-class="active"
+          @click="handleNavClick"
+        >
+          <Phone class="icon" />
+          <span v-if="!collapsed">Kontak</span>
+        </RouterLink>
+
       </nav>
 
     </div>

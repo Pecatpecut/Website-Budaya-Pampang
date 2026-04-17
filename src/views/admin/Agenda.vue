@@ -1,135 +1,80 @@
 <template>
-  <div class="page">
+  <div class="container py-4">
+    <h3 class="mb-4">Manajemen Agenda</h3>
 
-    <!-- HEADER -->
-    <div class="top-bar">
-      <h2>Manajemen Agenda</h2>
-
-      <button class="btn primary" @click="openModal">
-        + Tambah Agenda
-      </button>
-    </div>
+    <!-- FORM -->
+    <AgendaForm
+      :formData="form"
+      :isEdit="isEdit"
+      @submit="handleSubmit"
+      @cancel="resetForm"
+    />
 
     <!-- LIST -->
-    <div class="list">
-      <div 
-        v-for="item in agenda"
-        :key="item.id"
-        class="card"
-      >
-
-        <div class="left">
-          <h4>{{ item.title }}</h4>
-          <p>{{ item.tempat }}</p>
-          <span class="time">
-            {{ item.tanggal }} • {{ item.jam }}
-          </span>
-        </div>
-
-        <div class="actions">
-          <button class="edit" @click="handleEdit(item)">Edit</button>
-          <button class="delete" @click="handleDelete(item.id)">X</button>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- 🔥 MODAL -->
-    <div v-if="showModal" class="modal-overlay">
-
-      <div class="modal">
-
-        <h3>Tambah Agenda</h3>
-
-        <input v-model="form.title" placeholder="Judul" />
-        <input v-model="form.tempat" placeholder="Tempat" />
-        <input v-model="form.tanggal" placeholder="Tanggal" />
-        <input v-model="form.jam" placeholder="Jam" />
-
-        <div class="modal-actions">
-          <button class="btn primary" @click="handleSubmit">
-            Simpan
-          </button>
-          <button class="btn cancel" @click="closeModal">
-            Batal
-          </button>
-        </div>
-
-      </div>
-
-    </div>
-
+    <AgendaList
+      :items="agenda"
+      @edit="handleEdit"
+      @delete="handleDelete"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { adminData } from '@/store/adminData.js'
 
-const agenda = ref([
-  {
-    id: 1,
-    title: 'Pertunjukan Tari',
-    tempat: 'Rumah Lamin',
-    tanggal: '18 Apr 2026',
-    jam: '13.00'
-  },
-  {
-    id: 2,
-    title: 'Festival Budaya',
-    tempat: 'Lapangan Pampang',
-    tanggal: '20 Apr 2026',
-    jam: '15.00'
-  }
-])
+import AgendaForm from '@/components/admin/agenda/AgendaForm.vue'
+import AgendaList from '@/components/admin/agenda/AgendaList.vue'
 
-/* MODAL */
-const showModal = ref(false)
+const agenda = adminData.agenda
 
 const form = ref({
+  id: null,
   title: '',
-  tempat: '',
-  tanggal: '',
-  jam: ''
+  date: ''
 })
 
-const openModal = () => {
-  showModal.value = true
-}
+const isEdit = ref(false)
 
-const closeModal = () => {
-  showModal.value = false
-}
-
-/* SUBMIT */
 const handleSubmit = () => {
-  if (!form.value.title) return alert('Judul wajib')
+  if (!form.value.title || !form.value.date) return
 
-  agenda.value.push({
-    id: Date.now(),
-    ...form.value
-  })
-
-  form.value = {
-    title: '',
-    tempat: '',
-    tanggal: '',
-    jam: ''
+  if (isEdit.value) {
+    // ✅ UPDATE DATA
+    const index = agenda.findIndex(item => item.id === form.value.id)
+    if (index !== -1) {
+      agenda[index] = { ...form.value }
+    }
+  } else {
+    // ✅ TAMBAH DATA
+    agenda.push({
+      ...form.value,
+      id: Date.now()
+    })
   }
 
-  closeModal()
+  resetForm()
 }
 
-/* EDIT */
 const handleEdit = (item) => {
   form.value = { ...item }
-  showModal.value = true
+  isEdit.value = true
 }
 
-/* DELETE */
 const handleDelete = (id) => {
-  if (confirm('Hapus agenda?')) {
-    agenda.value = agenda.value.filter(i => i.id !== id)
+  const index = agenda.findIndex(item => item.id === id)
+  if (index !== -1) {
+    agenda.splice(index, 1)
   }
+}
+
+const resetForm = () => {
+  form.value = {
+    id: null,
+    title: '',
+    date: ''
+  }
+  isEdit.value = false
 }
 </script>
 

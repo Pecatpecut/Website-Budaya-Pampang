@@ -14,6 +14,8 @@ import DashboardLayout from '@/views/admin/Dashboard.vue'
 import Home from '@/views/admin/Home.vue'
 import Galeri from '@/views/admin/Galeri.vue'
 import Agenda from '@/views/admin/Agenda.vue'
+import Postingan from '@/views/admin/Postingan.vue'
+import KontakEdit from '@/views/admin/Kontak.vue'
 
 const routes = [
   /* ===== PUBLIC ROUTES ===== */
@@ -33,7 +35,9 @@ const routes = [
     children: [
       { path: '', component: Home },
       { path: 'galeri', component: Galeri },
-      { path: 'agenda', component: Agenda }
+      { path: 'agenda', component: Agenda },
+      { path: 'postingan', component: Postingan },
+      { path: 'kontak', component: KontakEdit }
     ]
   }
 ]

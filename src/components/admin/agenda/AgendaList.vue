@@ -1,37 +1,48 @@
 <template>
-  <div class="section">
+  <div>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Judul</th>
+          <th>Tanggal</th>
+          <th width="150">Aksi</th>
+        </tr>
+      </thead>
 
-    <div class="header">
-      <h3>Manajemen Agenda</h3>
-      <button class="btn" @click="$emit('add')">Tambah</button>
-    </div>
+      <tbody>
+        <tr v-for="item in items" :key="item.id">
+          <td>{{ item.title }}</td>
+          <td>{{ item.date }}</td>
+          <td class="d-flex gap-2">
+            <button
+              class="btn btn-sm btn-warning"
+              @click="$emit('edit', item)"
+            >
+              Edit
+            </button>
 
-    <div 
-      class="item"
-      v-for="item in agenda"
-      :key="item.id"
-    >
-      <div>
-        <h4>{{ item.title }}</h4>
-        <p>{{ item.tempat }}</p>
-      </div>
+            <button
+              class="btn btn-sm btn-danger"
+              @click="$emit('delete', item.id)"
+            >
+              Hapus
+            </button>
+          </td>
+        </tr>
 
-      <div class="right">
-        <span>{{ item.tanggal }} • {{ item.jam }}</span>
-
-        <div class="actions">
-          <button @click="$emit('edit', item)">Edit</button>
-          <button class="danger" @click="$emit('delete', item.id)">Hapus</button>
-        </div>
-      </div>
-    </div>
-
+        <tr v-if="!items.length">
+          <td colspan="3" class="text-center">
+            Belum ada agenda
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script setup>
 defineProps({
-  agenda: Array
+  items: Array
 })
 </script>
 

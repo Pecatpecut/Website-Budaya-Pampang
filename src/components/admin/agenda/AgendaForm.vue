@@ -1,56 +1,76 @@
 <template>
-  <div class="overlay">
+  <div class="mb-4">
+    <form @submit.prevent="$emit('submit')">
+      <div class="row g-2">
+        <div class="col-md-5">
+          <input
+            v-model="localForm.title"
+            type="text"
+            class="form-control"
+            placeholder="Judul agenda"
+          />
+        </div>
 
-    <div class="modal">
+        <div class="col-md-4">
+          <input
+            v-model="localForm.date"
+            type="date"
+            class="form-control"
+          />
+        </div>
 
-      <h3>{{ selected ? 'Edit Agenda' : 'Tambah Agenda' }}</h3>
+        <div class="col-md-3 d-flex gap-2">
+          <button class="btn btn-primary w-100">
+            {{ isEdit ? 'Update' : 'Tambah' }}
+          </button>
 
-      <input v-model="form.title" placeholder="Judul" />
-      <input v-model="form.tempat" placeholder="Tempat" />
-      <input v-model="form.tanggal" placeholder="Tanggal" />
-      <input v-model="form.jam" placeholder="Jam" />
-
-      <div class="actions">
-        <button @click="$emit('close')">Batal</button>
-        <button class="save" @click="submit">Simpan</button>
+          <button
+            v-if="isEdit"
+            type="button"
+            class="btn btn-secondary w-100"
+            @click="$emit('cancel')"
+          >
+            Batal
+          </button>
+        </div>
       </div>
-
-    </div>
-
+    </form>
   </div>
 </template>
 
 <script setup>
-import { reactive, watch } from 'vue'
+import { watch, reactive } from 'vue'
 
 const props = defineProps({
-  selected: Object
+  formData: Object,
+  isEdit: Boolean
 })
 
-const emit = defineEmits(['close', 'save'])
+const emit = defineEmits(['submit', 'cancel'])
 
-const form = reactive({
+const localForm = reactive({
   id: null,
   title: '',
-  tempat: '',
-  tanggal: '',
-  jam: ''
+  date: ''
 })
 
-watch(() => props.selected, (val) => {
-  if (val) Object.assign(form, val)
-  else {
-    form.id = null
-    form.title = ''
-    form.tempat = ''
-    form.tanggal = ''
-    form.jam = ''
-  }
-}, { immediate: true })
+// sync props → local
+watch(
+  () => props.formData,
+  (val) => {
+    Object.assign(localForm, val)
+  },
+  { immediate: true, deep: true }
+)
 
-const submit = () => {
-  emit('save', { ...form })
-}
+// sync local → parent
+watch(
+  localForm,
+  (val) => {
+    Object.assign(props.formData, val)
+  },
+  { deep: true }
+)
 </script>
 
 <style scoped>
