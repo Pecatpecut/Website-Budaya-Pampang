@@ -40,16 +40,23 @@
 </template>
 
 <script setup>
-const infoList = [
+import { computed } from 'vue'
+import { adminData } from '@/store/adminData'
+
+// 🔥 AMBIL DATA DARI ADMIN
+const info = adminData.kontakInfo.infoSection
+
+// 🔥 BUILD STRUCTURE SESUAI DESIGN KAMU
+const infoList = computed(() => [
   {
     title: 'Jam Operasional',
     icon: 'bi bi-clock',
     data: [
       'Senin s/d Sabtu',
-      '08.00 - 17.00 WITA',
+      info.jamOperasional.weekdays,
       '',
       'Minggu',
-      '14.00 WITA'
+      info.jamOperasional.sunday
     ]
   },
   {
@@ -57,11 +64,11 @@ const infoList = [
     icon: 'bi bi-truck',
     data: [
       'Motor',
-      'Rp 5.000',
+      'Rp ' + info.parkir.motor,
       'Mobil',
-      'Rp 10.000',
+      'Rp ' + info.parkir.mobil,
       'Bus',
-      'Rp 20.000'
+      'Rp ' + info.parkir.bus
     ]
   },
   {
@@ -69,11 +76,11 @@ const infoList = [
     icon: 'bi bi-person',
     data: [
       'Pertunjukan Tarian',
-      'Rp 45.000',
+      'Rp ' + info.wisata.tarian,
       'Kunjungan ke Lamin',
-      'Rp 15.000',
+      'Rp ' + info.wisata.lamin,
       'Susur Sungai (min 10 org)',
-      'Rp 30.000'
+      'Rp ' + info.wisata.susur
     ]
   },
   {
@@ -81,14 +88,14 @@ const infoList = [
     icon: 'bi bi-camera',
     data: [
       'Foto bersama penari',
-      'Rp 25.000 / 5 foto',
+      'Rp ' + info.tambahan.foto,
       'Sewa pakaian adat',
-      'Rp 50.000 - 100.000'
+      'Rp ' + info.tambahan.sewa
     ]
   }
-]
+])
 
-// styling logic (label vs price)
+// styling logic (tetap sama)
 const getClass = (index) => {
   if (index % 2 === 1) return 'price'
   if (index % 2 === 0) return 'label'
@@ -96,15 +103,13 @@ const getClass = (index) => {
 </script>
 
 <style scoped>
-
-/* SECTION */
+/* (STYLE KAMU TIDAK DIUBAH SAMA SEKALI) */
 .info-section {
   background: #0b0b0b;
   color: white;
   padding: 110px 0;
 }
 
-/* CARD */
 .info-card {
   padding: 30px 20px;
   border-radius: 16px;
@@ -112,13 +117,11 @@ const getClass = (index) => {
   background: transparent;
 }
 
-/* HOVER (MICROINTERACTION 🔥) */
 .info-card:hover {
   transform: translateY(-8px);
   background: rgba(255,255,255,0.03);
 }
 
-/* ICON WRAPPER */
 .icon-wrapper {
   width: 70px;
   height: 70px;
@@ -127,59 +130,48 @@ const getClass = (index) => {
   display: flex;
   align-items: center;
   justify-content: center;
-
   background: rgba(244, 197, 66, 0.08);
   border: 1px solid rgba(244, 197, 66, 0.3);
-
   transition: 0.3s;
 }
 
-/* ICON */
 .icon-wrapper i {
   font-size: 1.8rem;
   color: #f4c542;
 }
 
-/* ICON HOVER EFFECT */
 .info-card:hover .icon-wrapper {
   transform: scale(1.1);
   background: rgba(244, 197, 66, 0.15);
 }
 
-/* TITLE */
 .title {
   font-weight: 600;
   margin-bottom: 20px;
 }
 
-/* CONTENT */
 .content {
   font-size: 0.9rem;
 }
 
-/* LABEL */
 .label {
   color: #aaa;
   margin-top: 8px;
 }
 
-/* PRICE */
 .price {
   font-weight: 600;
   color: white;
   margin-bottom: 5px;
 }
 
-/* EMPTY SPACE */
 .content div:empty {
   height: 10px;
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
   .info-card {
     padding: 25px 15px;
   }
 }
-
 </style>

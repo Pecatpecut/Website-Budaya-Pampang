@@ -41,12 +41,34 @@ export const adminData = reactive({
     }
   ],
 
-  // 📞 KONTAK
+  // ================= KONTAK =================
   kontakInfo: {
-    alamat: 'Jl. Wisata Budaya Pampang, No.32, RT.03, Kel. Budaya Pampang, Kec. Samarinda Utara',
-    email: 'budayapampang90@gmail.com',
-    telepon: '081254993755',
-    instagram: '@budayapampang'
+    alamat: 'Jl. Wisata Budaya Pampang No.32',
+    email: 'budayapampang@gmail.com',
+    telepon: '08123456789',
+    instagram: '@budayapampang',
+
+    // ================= INFO SECTION =================
+    infoSection: {
+      jamOperasional: {
+        weekdays: '08.00 - 17.00 WITA',
+        sunday: '14.00 WITA'
+      },
+      parkir: {
+        motor: '5000',
+        mobil: '10000',
+        bus: '20000'
+      },
+      wisata: {
+        tarian: '45000',
+        lamin: '15000',
+        susur: '30000'
+      },
+      tambahan: {
+        foto: '25000 / 5 foto',
+        sewa: '50000 - 100000'
+      }
+    }
   }
 
 })

@@ -1,5 +1,5 @@
 <template>
-  <aside :class="['sidebar', { collapsed }]">
+  <aside :class="['sidebar', { collapsed, open: isOpen }]">
 
     <!-- TOP -->
     <div class="top">
@@ -87,7 +87,8 @@
 import { useRoute, useRouter } from 'vue-router'
 
 defineProps({
-  collapsed: Boolean
+  collapsed: Boolean,
+  isOpen: Boolean
 })
 
 const emit = defineEmits(['toggleCollapse'])
@@ -280,6 +281,22 @@ const handleLogout = () => {
 
 .sidebar.collapsed .logout-btn {
   padding: 12px 0;
+}
+
+/* ================= MOBILE ONLY FIX ================= */
+@media (max-width: 768px) {
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1100; /* di atas overlay */
+  }
+
+  /* saat dibuka */
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
 }
 
 </style>
