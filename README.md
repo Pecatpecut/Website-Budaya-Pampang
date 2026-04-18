@@ -10,255 +10,36 @@ npm install
 npm run dev
 ```
 
-# 🌐 Website Desa Budaya Pampang
+# 🛠️ Backend API — Website Desa Budaya Pampang
 
 ## 📌 Overview
 
-Project ini adalah website **Desa Budaya Pampang** yang terdiri dari:
+Backend ini digunakan untuk mendukung website **Desa Budaya Pampang** yang dibangun menggunakan:
 
-* 🌐 **Public Website** (untuk pengunjung)
-* 🔐 **Admin Dashboard** (untuk mengelola konten)
+* 🎯 Frontend: Vue 3 (SPA)
+* 🧩 Backend: Native PHP (REST API)
+* 🗄️ Database: MySQL
 
-Frontend dibuat menggunakan:
+Backend bertugas untuk:
 
-* Vue 3
-* Bootstrap
-
-Backend dirancang menggunakan:
-
-* Native PHP (REST API)
-* MySQL Database
+* Menyediakan data ke frontend (JSON)
+* Mengelola data admin (CRUD)
+* Menyimpan data ke database
 
 ---
 
-## 🧭 Struktur Halaman
+## ⚙️ Teknologi
 
-### 🌐 Public
-
-* `/` → Home
-* `/tentang` → Tentang Kami
-* `/publikasi` → Berita / Postingan
-* `/kontak` → Kontak
-
-### 🔐 Admin
-
-* `/login`
-* `/admin`
-
-  * `/admin` → Dashboard
-  * `/admin/agenda`
-  * `/admin/galeri`
-  * `/admin/postingan`
-  * `/admin/kontak`
+* PHP Native (tanpa framework)
+* MySQL
+* REST API (JSON)
+* CORS enabled
 
 ---
 
-## 🔐 Sistem Autentikasi
+## 🧱 Struktur Database
 
-Saat ini frontend menggunakan:
-
-* localStorage (sementara)
-
-Backend diharapkan:
-
-* Validasi login dengan database
-* Menggunakan session atau token (JWT opsional)
-* Mengembalikan token ke frontend
-
----
-
-## 🗂 Struktur Data
-
-### 📅 Agenda
-
-```json
-{
-  "id": 1,
-  "title": "string",
-  "date": "YYYY-MM-DD",
-  "time": "HH:mm",
-  "location": "string"
-}
-```
-
-### 🖼 Galeri
-
-```json
-{
-  "id": 1,
-  "title": "string",
-  "image": "url/path"
-}
-```
-
-### 📰 Postingan
-
-```json
-{
-  "id": 1,
-  "title": "string",
-  "link": "url",
-  "source": "string",
-  "thumbnail": "url",
-  "date": "YYYY-MM-DD"
-}
-```
-
-### 📞 Kontak
-
-```json
-{
-  "alamat": "string",
-  "email": "string",
-  "telepon": "string",
-  "instagram": "string"
-}
-```
-
----
-
-## 🔌 API Endpoint
-
-### 🔐 Auth
-
-| Method | Endpoint               |
-| ------ | ---------------------- |
-| POST   | `/api/auth/login.php`  |
-| POST   | `/api/auth/logout.php` |
-
----
-
-### 📅 Agenda
-
-| Method | Endpoint                         |
-| ------ | -------------------------------- |
-| GET    | `/api/agenda/index.php`          |
-| POST   | `/api/agenda/store.php`          |
-| PUT    | `/api/agenda/update.php?id={id}` |
-| DELETE | `/api/agenda/delete.php?id={id}` |
-
----
-
-### 🖼 Galeri
-
-| Method | Endpoint                         |
-| ------ | -------------------------------- |
-| GET    | `/api/galeri/index.php`          |
-| POST   | `/api/galeri/store.php`          |
-| DELETE | `/api/galeri/delete.php?id={id}` |
-
----
-
-### 📰 Postingan
-
-| Method | Endpoint                            |
-| ------ | ----------------------------------- |
-| GET    | `/api/postingan/index.php`          |
-| POST   | `/api/postingan/store.php`          |
-| DELETE | `/api/postingan/delete.php?id={id}` |
-
----
-
-### 📞 Kontak
-
-| Method | Endpoint                 |
-| ------ | ------------------------ |
-| GET    | `/api/kontak/index.php`  |
-| PUT    | `/api/kontak/update.php` |
-
----
-
-## 📦 Format Response API
-
-### ✅ Success
-
-```json
-{
-  "success": true,
-  "data": {}
-}
-```
-
-### ❌ Error
-
-```json
-{
-  "success": false,
-  "message": "Error message"
-}
-```
-
----
-
-## 🗄️ Struktur Database (MySQL)
-
-### Database
-
-```sql
-CREATE DATABASE pampang_db;
-USE pampang_db;
-```
-
----
-
-### 👤 users
-
-```sql
-CREATE TABLE users (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  username VARCHAR(50),
-  password VARCHAR(255),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
----
-
-### 📅 agenda
-
-```sql
-CREATE TABLE agenda (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  title VARCHAR(255),
-  date DATE,
-  time TIME,
-  location VARCHAR(255),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
----
-
-### 🖼 galeri
-
-```sql
-CREATE TABLE galeri (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  title VARCHAR(255),
-  image VARCHAR(255),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
----
-
-### 📰 postingan
-
-```sql
-CREATE TABLE postingan (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  title VARCHAR(255),
-  link TEXT,
-  source VARCHAR(100),
-  thumbnail VARCHAR(255),
-  date DATE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
----
-
-### 📞 kontak
+### 📍 1. Tabel `kontak`
 
 ```sql
 CREATE TABLE kontak (
@@ -266,142 +47,272 @@ CREATE TABLE kontak (
   alamat TEXT,
   email VARCHAR(100),
   telepon VARCHAR(20),
-  instagram VARCHAR(100)
+  instagram VARCHAR(50),
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 ```
 
 ---
 
-## ⚙️ Struktur Backend (PHP Native)
+### 📍 2. Tabel `info_beranda`
 
-```
-backend/
-├── config/
-│   └── db.php
-│
-├── api/
-│   ├── auth/
-│   ├── agenda/
-│   ├── galeri/
-│   ├── postingan/
-│   └── kontak/
-│
-├── uploads/
+```sql
+CREATE TABLE info_beranda (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+
+  jam_weekdays VARCHAR(50),
+  jam_sunday VARCHAR(50),
+
+  parkir_motor INT,
+  parkir_mobil INT,
+  parkir_bus INT,
+
+  wisata_tarian INT,
+  wisata_lamin INT,
+  wisata_susur INT,
+
+  tambahan_foto VARCHAR(50),
+  tambahan_sewa VARCHAR(50),
+
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
 ```
 
 ---
 
-## ⚙️ Koneksi Database (PHP)
+### 📍 3. Tabel `agenda`
+
+```sql
+CREATE TABLE agenda (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  judul VARCHAR(255),
+  deskripsi TEXT,
+  tanggal DATE,
+  gambar VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+### 📍 4. Tabel `galeri`
+
+```sql
+CREATE TABLE galeri (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  judul VARCHAR(255),
+  gambar VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+### 📍 5. Tabel `postingan`
+
+```sql
+CREATE TABLE postingan (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  judul VARCHAR(255),
+  isi TEXT,
+  gambar VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+### 📍 6. Tabel `admin`
+
+```sql
+CREATE TABLE admin (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(50),
+  password VARCHAR(255)
+);
+```
+
+---
+
+## 🔗 API Endpoint
+
+### 🔐 Auth
+
+```
+POST /api/login.php
+```
+
+---
+
+### 📞 Kontak
+
+```
+GET  /api/kontak.php
+POST /api/kontak.php
+```
+
+---
+
+### 🏠 Info Beranda
+
+```
+GET  /api/info.php
+POST /api/info.php
+```
+
+---
+
+### 📅 Agenda
+
+```
+GET    /api/agenda.php
+POST   /api/agenda.php
+PUT    /api/agenda.php?id=1
+DELETE /api/agenda.php?id=1
+```
+
+---
+
+### 🖼️ Galeri
+
+```
+GET    /api/galeri.php
+POST   /api/galeri.php
+DELETE /api/galeri.php?id=1
+```
+
+---
+
+### 📰 Postingan
+
+```
+GET    /api/postingan.php
+POST   /api/postingan.php
+PUT    /api/postingan.php?id=1
+DELETE /api/postingan.php?id=1
+```
+
+---
+
+## 📦 Format Data
+
+### 🔹 Info Beranda (Response)
+
+```json
+{
+  "jamOperasional": {
+    "weekdays": "08.00 - 17.00",
+    "sunday": "14.00"
+  },
+  "parkir": {
+    "motor": 5000,
+    "mobil": 10000,
+    "bus": 20000
+  },
+  "wisata": {
+    "tarian": 45000,
+    "lamin": 15000,
+    "susur": 30000
+  },
+  "tambahan": {
+    "foto": "25000 / 5 foto",
+    "sewa": "50000 - 100000"
+  }
+}
+```
+
+---
+
+## 🧪 Contoh Implementasi API
+
+### 📁 `/api/kontak.php`
 
 ```php
 <?php
-$conn = new mysqli("localhost", "root", "", "pampang_db");
-
-if ($conn->connect_error) {
-  die(json_encode(["success" => false]));
-}
-
 header("Content-Type: application/json");
-header("Access-Control-Allow-Origin: *");
-?>
-```
+$conn = new mysqli("localhost", "root", "", "pampang");
 
----
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+  $result = $conn->query("SELECT * FROM kontak LIMIT 1");
+  echo json_encode($result->fetch_assoc());
+}
 
-## 🔐 Contoh Login API
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  $data = json_decode(file_get_contents("php://input"), true);
 
-```php
-<?php
-$data = json_decode(file_get_contents("php://input"), true);
+  $stmt = $conn->prepare("
+    UPDATE kontak SET 
+      alamat=?, email=?, telepon=?, instagram=? 
+    WHERE id=1
+  ");
 
-$username = $data['username'];
-$password = $data['password'];
+  $stmt->bind_param(
+    "ssss",
+    $data['alamat'],
+    $data['email'],
+    $data['telepon'],
+    $data['instagram']
+  );
 
-$query = $conn->prepare("SELECT * FROM users WHERE username=?");
-$query->bind_param("s", $username);
-$query->execute();
+  $stmt->execute();
 
-$user = $query->get_result()->fetch_assoc();
-
-if ($user && password_verify($password, $user['password'])) {
-  echo json_encode([
-    "success" => true,
-    "token" => base64_encode($user['id'])
-  ]);
-} else {
-  echo json_encode([
-    "success" => false,
-    "message" => "Login gagal"
-  ]);
+  echo json_encode(["success" => true]);
 }
 ```
 
 ---
 
-## 📅 Contoh API Agenda (GET)
+## ⚠️ Aturan Penting (Kontrak Data)
 
-```php
-<?php
-$result = $conn->query("SELECT * FROM agenda");
+### 💰 Harga (WAJIB)
 
-$data = [];
-while ($row = $result->fetch_assoc()) {
-  $data[] = $row;
-}
+* Disimpan sebagai **INTEGER**
+* Contoh:
 
-echo json_encode([
-  "success" => true,
-  "data" => $data
-]);
+```json
+"motor": 5000
+```
+
+### ❌ Jangan kirim:
+
+```json
+"motor": "Rp 5.000"
 ```
 
 ---
 
-## 🖼 Upload File (Galeri)
+## 🔐 Security Basic
 
-```php
-<?php
-$file = $_FILES['image'];
-$filename = time() . "_" . $file['name'];
-
-move_uploaded_file($file['tmp_name'], "../../uploads/" . $filename);
-
-echo json_encode([
-  "success" => true,
-  "image" => $filename
-]);
-```
+* Gunakan `password_hash()` untuk password
+* Gunakan prepared statement (WAJIB)
+* Validasi input user
+* Hindari query langsung (raw query)
 
 ---
 
-## 🔗 Integrasi Frontend (Contoh)
+## 🔄 Integrasi dengan Frontend
 
-```js
-import axios from 'axios'
+Frontend akan:
 
-const API = 'http://localhost/backend/api'
-
-export const getAgenda = async () => {
-  const res = await axios.get(`${API}/agenda/index.php`)
-  return res.data
-}
-```
+* Menggunakan API ini via `fetch` / `axios`
+* Mengganti state lokal (`adminData.js`) dengan data dari API
 
 ---
 
-## ⚠️ Catatan Penting
+## 🚀 Next Development
 
-* Backend hanya menyediakan REST API (JSON)
-* Frontend tidak membutuhkan SSR
-* Gunakan prepared statement untuk keamanan
-* Aktifkan CORS
-* Validasi input & file upload
+Beberapa pengembangan yang bisa dilakukan:
+
+* JWT Authentication
+* Upload image validation
+* Pagination (agenda & postingan)
+* MVC structure (PHP)
+* Migration ke Laravel (optional)
 
 ---
 
-## 🚀 Tujuan Akhir
+## 🎯 Tujuan Akhir
 
-* Website dapat digunakan secara real
-* Data tersimpan di database
-* Admin dapat mengelola konten
-* Frontend dan backend terintegrasi dengan baik
+* Website fully dynamic (tidak hardcoded)
+* Admin dapat mengelola konten secara real
+* Frontend & backend terintegrasi dengan baik
