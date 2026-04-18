@@ -26,7 +26,6 @@
           <div class="overlay">
             <div class="caption">
               <h6>{{ item.title }}</h6>
-              <p>{{ item.desc }}</p>
             </div>
           </div>
         </div>
@@ -60,34 +59,28 @@ const galleryList = [
   {
     image: new URL('@/assets/images/lamin.svg', import.meta.url).href,
     title: 'Rumah Adat Lamin',
-    desc: 'Simbol budaya Dayak Kenyah',
     class: 'large'
   },
   {
     image: new URL('@/assets/images/tarian.svg', import.meta.url).href,
     title: 'Tarian Tradisional',
-    desc: 'Pertunjukan setiap Minggu',
     class: 'tall'
   },
   {
     image: new URL('@/assets/images/susur-sungai.svg', import.meta.url).href,
     title: 'Susur Sungai',
-    desc: 'Pengalaman alam yang menenangkan'
   },
   {
     image: new URL('@/assets/images/lamin.svg', import.meta.url).href,
     title: 'Interior Lamin',
-    desc: 'Ukiran khas Dayak'
   },
   {
     image: new URL('@/assets/images/tarian.svg', import.meta.url).href,
     title: 'Busana Adat',
-    desc: 'Keindahan pakaian tradisional'
   },
   {
     image: new URL('@/assets/images/lamin.svg', import.meta.url).href,
     title: 'Budaya Lokal',
-    desc: 'Warisan yang terus hidup'
   }
 ]
 

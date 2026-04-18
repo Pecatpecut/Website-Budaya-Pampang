@@ -10,12 +10,6 @@
       <span class="breadcrumb">Admin / {{ pageTitle }}</span>
     </div>
 
-    <div class="header-right">
-      <div class="avatar">
-        <i class="bi bi-person-fill"></i>
-      </div>
-    </div>
-
   </header>
 </template>
 
@@ -29,11 +23,11 @@ const route = useRoute()
 
 const pageTitle = computed(() => {
   const map = {
-    '/admin': 'Dashboard',
-    '/admin/agenda': 'Agenda',
-    '/admin/galeri': 'Galeri',
+    '/admin':           'Dashboard',
+    '/admin/agenda':    'Agenda',
+    '/admin/galeri':    'Galeri',
     '/admin/postingan': 'Postingan',
-    '/admin/kontak': 'Kontak'
+    '/admin/kontak':    'Kontak'
   }
   return map[route.path] || 'Dashboard'
 })
@@ -59,20 +53,16 @@ const pageTitle = computed(() => {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   font-size: 18px;
   cursor: pointer;
   transition: 0.2s;
-  display: none;
 }
-
 .menu-btn:hover { background: #eee; }
 
-.header-info {
-  flex: 1;
-}
+.header-info { flex: 1; padding-top: 16px; }
 
 .title {
   font-size: 17px;
@@ -85,25 +75,6 @@ const pageTitle = computed(() => {
 .breadcrumb {
   font-size: 12px;
   color: #bbb;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--red);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  cursor: pointer;
 }
 
 @media (max-width: 768px) {

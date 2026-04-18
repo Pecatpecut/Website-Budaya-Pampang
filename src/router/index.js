@@ -1,63 +1,67 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 /* ================= PUBLIC ================= */
-import HomePublic from '@/views/public/Home.vue'
-import Tentang from '@/views/public/TentangKami.vue'
-import Publikasi from '@/views/public/Publikasi.vue'
-import Kontak from '@/views/public/Kontak.vue'
+import HomePublik   from '@/views/public/HomePublik.vue'
+import Tentang      from '@/views/public/TentangKami.vue'
+import Publikasi    from '@/views/public/Publikasi.vue'
+import Kontak       from '@/views/public/KontakPublik.vue'
 
 /* ================= AUTH ================= */
-import Login from '@/views/admin/Login.vue'
+import Login        from '@/views/admin/Login.vue'
 
 /* ================= ADMIN ================= */
 import DashboardLayout from '@/views/admin/Dashboard.vue'
-import Home from '@/views/admin/Home.vue'
-import Galeri from '@/views/admin/Galeri.vue'
-import Agenda from '@/views/admin/Agenda.vue'
-import Postingan from '@/views/admin/Postingan.vue'
-import KontakEdit from '@/views/admin/Kontak.vue'
+import AdminHome    from '@/views/admin/HomeAdmin.vue'
+import AdminGaleri  from '@/views/admin/GaleriAdmin.vue'
+import AdminAgenda  from '@/views/admin/AgendaAdmin.vue'
+import AdminPostingan from '@/views/admin/Postingan.vue'
+import AdminKontak  from '@/views/admin/KontakAdmin.vue'
 
 const routes = [
-  /* ===== PUBLIC ROUTES ===== */
-  { path: '/', component: HomePublic },
-  { path: '/tentang', component: Tentang },
-  { path: '/publikasi', component: Publikasi },
-  { path: '/kontak', component: Kontak },
+  /* ===== PUBLIC ===== */
+  { path: '/',          component: HomePublik },
+  { path: '/tentang',   component: Tentang    },
+  { path: '/publikasi', component: Publikasi  },
+  { path: '/kontak',    component: Kontak     },
 
   /* ===== LOGIN ===== */
-  { path: '/login', component: Login,
-    meta: { hideNavbar: true, isAuth: true }
-   },
+  { path: '/login', component: Login, meta: { hideNavbar: true, isAuth: true }},
 
-  /* ===== ADMIN ROUTES (butuh login) ===== */
+  /* ===== ADMIN (requires auth) ===== */
   {
     path: '/admin',
     component: DashboardLayout,
     meta: { requiresAuth: true, hideNavbar: true, isAdmin: true},
     children: [
-      { path: '', component: Home },
-      { path: 'galeri', component: Galeri },
-      { path: 'agenda', component: Agenda },
-      { path: 'postingan', component: Postingan },
-      { path: 'kontak', component: KontakEdit }
+      { path: '',           component: AdminHome      },
+      { path: 'galeri',     component: AdminGaleri    },
+      { path: 'agenda',     component: AdminAgenda    },
+      { path: 'postingan',  component: AdminPostingan },
+      { path: 'kontak',     component: AdminKontak    }
     ]
-  }
+  },
+
+  /* ===== FALLBACK ===== */
+  { path: '/:pathMatch(.*)*', redirect: '/' }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) return savedPosition
+    if (to.hash) return { el: to.hash, behavior: 'smooth' }
+    return { top: 0 }
+  }
 })
 
-/* AUTH GUARD */
+/* ===== AUTH GUARD ===== */
 router.beforeEach((to, from, next) => {
   const isLoggedIn = !!localStorage.getItem('token')
 
   if (to.meta.requiresAuth && !isLoggedIn) {
-    // Belum login → redirect ke /login
     next('/login')
   } else if (to.path === '/login' && isLoggedIn) {
-    // Sudah login tapi buka /login → redirect ke /admin
     next('/admin')
   } else {
     next()
